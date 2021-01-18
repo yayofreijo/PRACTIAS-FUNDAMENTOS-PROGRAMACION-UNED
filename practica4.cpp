@@ -71,7 +71,7 @@ typedef struct MENU {
 	TipoPedido DatosPedido; /* Variable para un solo pedido */
 	char LetraMenu, i, j, otropedido, otrofarmaco;
 	ListadoPedidos ListaTotalPedidos; /* Variable para todos los pedidos */
-	bool pedirmasfarmacos, HuecoEncontradoFarmaco, HuecoEncontradoPedido;
+	bool pedirmasfarmacos, HuecoEncontradoFarmaco, HuecoEncontradoPedido, HuecoCalendario;
 	TipoFecha FechaLista;
 	int PesoTotalEnvio, IncrementoDias, MesCalendario, AnhoCalendario, a, y, m, diaZeller, d, diasMes;
 
@@ -478,9 +478,14 @@ void MENU::CalendarioMes() {
 		for(int k=1; k<=100; k++) {
 			if(dia == ListaTotalPedidos[k].Fecha.Dia &&	MesCalendario == ListaTotalPedidos[k].Fecha.Mes && AnhoCalendario == ListaTotalPedidos[k].Fecha.Anho) {
 				printf("%-5d", dia);
-			}	
+				HuecoCalendario = true
+			}
+			else {
+				HuecoCalendario = false
 		}
-		printf("--   ");	
+		if(HuecoCalendario = false) {	
+			printf("--   ");
+		}	
 		IncrementoDias++;
 		if((IncrementoDias-1) % 7 == 0) {
 			printf("\n");
