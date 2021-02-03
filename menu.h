@@ -35,7 +35,6 @@ typedef struct TipoFarmaco {                                           /* Tipo s
 	int PesoFarmaco;
 	int NumeroFarmacos;
 	int PesoTotalFarmacos;
-
 };
 
 typedef TipoFarmaco ListaFarmacos[6];                                  /* Tipo vector con el numero maximo de farmacos por pedido, que son 5 */
@@ -100,7 +99,7 @@ typedef struct MENU {
 	TipoTotalAlmacenes TotalAlmacenes;                     /* Variable para todos los almacenes */
 	TipoFecha FechaLista;
 	ErroresPrograma error1, error2, error3, error4, error5, error6, error7, error8, error9, error10, error11, error12, error13, error14, error15, 
-	error16, error17, error18, error19, error20, error21;
+	error16, error17, error18, error19, error20, error21, error22, error23;
 	char LetraMenu, i, j, otropedido, otrofarmaco, almacencorrecto;
 	bool pedirmasfarmacos, HuecoEncontradoFarmaco, HuecoEncontradoPedido, HuecoEncontradoIdentificador, HuecoEncontradoAlmacen;
 	int MaximoPacientes, MaximoFarmacos, MaximoAlmacenes, DiasMesEnvio;
