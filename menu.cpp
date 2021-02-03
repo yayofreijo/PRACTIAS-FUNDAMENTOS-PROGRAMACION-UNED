@@ -245,16 +245,28 @@ void MENU::AltaAlmacen(){
 	}
 	printf("Datos correctos (S/N)? ");
 	scanf("%s", &almacencorrecto);
-	if (almacencorrecto == 'S' || almacencorrecto == 's') {
-		for (int k=1; k<=10 && (HuecoEncontradoAlmacen==false); k++) {
-			if(HuecoOcupadoAlmacen[k] == false && Almacen.IdentificadorAlmacen == k) {
-				HuecoEncontradoAlmacen = true;
-				TotalAlmacenes[k] = Almacen;                   /* Aqui se meten los datos introducidos en Alamcen en el vector TotalAlmacenes */
-				HuecoOcupadoAlmacen[k] = true;
-				MaximoAlmacenes++;
+	try {
+		if (almacencorrecto == 'S' || almacencorrecto == 's') {
+			for (int k=1; k<=10 && (HuecoEncontradoAlmacen==false); k++) {
+				if(HuecoOcupadoAlmacen[k] == false && Almacen.IdentificadorAlmacen == k) {
+					HuecoEncontradoAlmacen = true;
+					TotalAlmacenes[k] = Almacen;                   /* Aqui se meten los datos introducidos en Almacen en el vector TotalAlmacenes */
+					HuecoOcupadoAlmacen[k] = true;
+					MaximoAlmacenes++;
+				}
 			}
-		}		
+		}	
+		else if (almacencorrecto == 'N' || almacencorrecto == 'n') {
+			AltaAlmacen();
+		}
+		else {
+			throw error21;
+		}
 	}
+	catch (ErroresPrograma error21) {
+		printf("\n\nCaracter invalido para Datos Correctos\n");
+		return;
+	}	
 }
 
 
@@ -274,6 +286,15 @@ void MENU::AltaNueva () {
 	}
 
 	printf("\nAlta nuevo paciente\n\n");
+	printf("      Codigo de almacen (entre 1 y 10)? ");
+	try {
+		scanf("%d", &FilaUbicaciones.AlmacenPaciente);
+		if (FilaUbicaciones.AlmacenPaciente <1 || FilaUbicaciones.AlmacenPaciente >10) {
+			throw error22;
+		}
+	}
+	catch (ErroresPrograma error22) {
+		printf("\n\nDato incorrecto para Codigo Almacen\n");
 	printf("      Identificador (Entre 1 y 20 caracteres)? ");
 	try {
 		fflush(stdin);
