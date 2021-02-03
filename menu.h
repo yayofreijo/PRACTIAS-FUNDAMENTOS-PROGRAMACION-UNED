@@ -17,6 +17,7 @@ typedef char TipoIdentificador[21];                                    /* Tipo v
 typedef char TipoIdentificadorAux[];                                   /* Tipo vector de caracteres abierto auxiliar */
 
 typedef struct TipoUbicacion {                                         /* Tipo struct con los datos que forman cada ubicacion */
+	int AlmacenPaciente;
 	int Referencia;
 	TipoIdentificador Identificador;
 	int Distancia;
@@ -42,6 +43,7 @@ typedef TipoFarmaco ListaFarmacos[6];                                  /* Tipo v
 typedef bool EstadoHuecoFarmacos[6];                                   /* Tipo vector bool para saber si los huecos del tipo vector ListaFarmacos estan vacios o no */
 
 typedef struct TipoPedido {                                            /* Tipo struct con los datos que forman cada pedido */
+	int AlmacenPedido;
 	int RefPedido;
 	int NumeroEnvios;
 	TipoFecha Fecha;
@@ -98,7 +100,7 @@ typedef struct MENU {
 	TipoTotalAlmacenes TotalAlmacenes;                     /* Variable para todos los almacenes */
 	TipoFecha FechaLista;
 	ErroresPrograma error1, error2, error3, error4, error5, error6, error7, error8, error9, error10, error11, error12, error13, error14, error15, 
-	error16, error17, error18, error19, error20;
+	error16, error17, error18, error19, error20, error21;
 	char LetraMenu, i, j, otropedido, otrofarmaco, almacencorrecto;
 	bool pedirmasfarmacos, HuecoEncontradoFarmaco, HuecoEncontradoPedido, HuecoEncontradoIdentificador, HuecoEncontradoAlmacen;
 	int MaximoPacientes, MaximoFarmacos, MaximoAlmacenes, DiasMesEnvio;
