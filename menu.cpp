@@ -295,6 +295,8 @@ void MENU::AltaNueva () {
 	}
 	catch (ErroresPrograma error22) {
 		printf("\n\nDato incorrecto para Codigo Almacen\n");
+		return;
+	printf("\n\nDatos paciente:\n");	
 	printf("      Identificador (Entre 1 y 20 caracteres)? ");
 	try {
 		fflush(stdin);
@@ -346,20 +348,31 @@ void MENU::AltaNueva () {
 	try {
 		scanf("%s", &i);
 		if(i=='s' || i=='S') {
-			for (int k=1; k<=20 && (HuecoEncontradoAlta==false); k++) {
-				if(HuecoOcupadoAlta[k] == false) {
-				  	HuecoEncontradoAlta = true;
-					FilaUbicaciones.Referencia = k;
-					TablaUbicaciones[k] = FilaUbicaciones;                   /* Aqui se meten los datos introducidos en FilaUbicaciones en el vector TablaUbicaciones */
-					HuecoOcupadoAlta[k] = true;
-					MaximoPacientes++;
+			for (int i=1; i<=10; i++) {
+				try {
+					if (FilaUbicaciones.AlmacenPaciente == TotalAlmacenes[i].IdentificadorAlmacen) {
+						for (int k=1; k<=20 && (HuecoEncontradoAlta==false); k++) {
+							if(HuecoOcupadoAlta[k] == false) {
+								HuecoEncontradoAlta = true;
+								FilaUbicaciones.Referencia = k;
+								TablaUbicaciones[k] = FilaUbicaciones;                   /* Aqui se meten los datos introducidos en FilaUbicaciones en el vector TablaUbicaciones */
+								HuecoOcupadoAlta[k] = true;
+								MaximoPacientes++;
+							}	
+						}
+						if (MaximoPacientes == 20) {
+							printf("\n\nAlcanzado el maximo de pacientes\n");
+							return;
+						}
+					}
+					else {
+						throw error23;
+					}	
 				}
+				catch (ErroresPrograma error23 {
+					printf("\n\nNo se puede guardar esta informacion ya que el almacen indicado aun no existe\n");
+				}	
 			}
-			if (MaximoPacientes == 20) {
-				printf("\n\nAlcanzado el maximo de pacientes\n");
-				return;
-			}
-		}
 		else if(i=='N' || i=='n') {
 			AltaNueva ();
 		}
@@ -371,7 +384,7 @@ void MENU::AltaNueva () {
 		printf("\n\nCaracter invalido para la opcion 'Datos Correctos'\n");
 		return;
 	}
-	printf("Otro paciente (S/N)? ");
+	printf("Otro paciente en el mismo almacen (S/N)? ");
 	try {
 		scanf("%s", &j);
 		if(j=='S' || j=='s') {
@@ -391,16 +404,28 @@ void MENU::AltaNueva () {
 }
 
 void MENU::UbicacionPacientes () {
-  printf("\nLista de pacientes y su ubicacion:\n");
-  printf("Ref.  ");
-  printf("Identificador           ");
-  printf("Distancia      ");
-  printf("Angulo         \n");
-  for(int i=1; i<=20; i++){
-    if(HuecoOcupadoAlta[i] == true){
-    	printf("%-6d%-24s%-15d%-15d\n", TablaUbicaciones[i].Referencia,TablaUbicaciones[i].Identificador, TablaUbicaciones[i].Distancia, TablaUbicaciones[i].Angulo);
-    }
-  }
+	int codigo;
+	
+	printf("\nLista de pacientes y su ubicacion:\n");
+	printf("\n      Codigo almacen? ");
+	scanf("%d", &codigo);
+	for (int k=1; k<=10; k++) {
+		if (codigo == TotalAlmacenes[k].IdentificadorAlmacen) {
+			printf("\nRef.  ");
+			printf("Identificador           ");
+			printf("Distancia      ");
+			printf("Angulo         \n");
+			for(int i=1; i<=20; i++) {
+				if(HuecoOcupadoAlta[i] == true) {
+					printf("%-6d%-24s%-15d%-15d\n", TablaUbicaciones[i].Referencia,TablaUbicaciones[i].Identificador, TablaUbicaciones[i].Distancia, TablaUbicaciones[i].Angulo);
+				}
+			}
+		}
+		else {
+			printf("\n\nDato incorrecto para codigo almacen: o no tiene pacientes asignados, o no esta creado aun\n");
+			return;
+		}
+	}	
 }
 
 void MENU::NuevoPedido() {
