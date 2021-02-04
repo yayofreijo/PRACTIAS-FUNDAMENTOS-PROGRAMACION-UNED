@@ -70,6 +70,7 @@ typedef struct TipoAlmacen {                                           /* Tipo s
 	TipoCuarentayocho MunicipioAlmacen;
 	TipoProvincia ProvinciaAlmacen;
 	TipoCuarentayocho DescripcionAlmacen;
+	TipoUbicacionesTotal UbicacionesAlmacen;                       /* Variable para almacenar todas las ubicaciones totales de un almacen */
 	ListadoPedidos ListaPedidosAlmacen;
 };
 
@@ -89,7 +90,6 @@ typedef struct MENU {
 	TipoIdentificadorAux IdentificadorAux, FarmacoAux;
 	TipoCuarentayochoAux DireccionAlmacenAux, MunicipioAlmacenAux, DescripcionAlmacenAux;
 	TipoProvinciaAux ProvinciaAlmacenAux;
-	TipoUbicacionesTotal TablaUbicaciones;                 /* Variable para almacenar todas las ubicaciones totales */
 	EstadoHuecoAlta HuecoOcupadoAlta;
 	EstadoHuecoPedidos HuecoOcupadoPedidos;
 	EstadoHuecosAlmacen HuecoOcupadoAlmacen;
