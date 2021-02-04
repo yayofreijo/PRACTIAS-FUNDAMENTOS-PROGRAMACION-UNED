@@ -360,7 +360,7 @@ void MENU::AltaNueva () {
 							if(HuecoOcupadoAlta[k] == false) {
 								HuecoEncontradoAlta = true;
 								FilaUbicaciones.Referencia = k;
-								TablaUbicaciones[k] = FilaUbicaciones;                   /* Aqui se meten los datos introducidos en FilaUbicaciones en el vector TablaUbicaciones */
+								TotalAlmacenes[i].UbicacionesAlmacen[k] = FilaUbicaciones;                   /* Aqui se meten los datos introducidos en FilaUbicaciones en el vector TablaUbicaciones */
 								HuecoOcupadoAlta[k] = true;
 								MaximoPacientes++;
 							}	
@@ -433,7 +433,7 @@ void MENU::UbicacionPacientes () {
 			printf("Angulo         \n");
 			for(int i=1; i<=20; i++) {
 				if(HuecoOcupadoAlta[i] == true) {
-					printf("      %-6d%-24s%-15d%-15d\n", TablaUbicaciones[i].Referencia,TablaUbicaciones[i].Identificador, TablaUbicaciones[i].Distancia, TablaUbicaciones[i].Angulo);
+					printf("      %-6d%-24s%-15d%-15d\n", TotalAlmacenes[k].UbicacionesAlmacen[i].Referencia,TotalAlmacenes[k].UbicacionesAlmacen[i].Identificador, TotalAlmacenes[k].UbicacionesAlmacen[i].Distancia, TotalAlmacenes[k].UbicacionesAlmacen[i].Angulo);
 				}
 			}
 			return;
@@ -967,7 +967,7 @@ void MENU::ListaPedidos() {
 	catch (ErroresPrograma error27) {
 		printf ("Dato incorrecto para codigo almacen: o valor fuera del rango permitido o el almacen indicado aun no existe");
 		return;
-	printf("      Dia? ");
+	printf("\n      Dia? ");
 	try {
 		scanf("%d", &FechaLista.Dia);
 		printf("      Mes? ");
@@ -1017,23 +1017,28 @@ void MENU::ListaPedidos() {
 		printf("\n\nFormato de fecha incorrecta\n");
 		return;
 	}
-	for(int k=1; k<=100; k++) {
-		if(FechaLista.Dia == ListaTotalPedidos[k].Fecha.Dia && FechaLista.Mes == ListaTotalPedidos[k].Fecha.Mes && FechaLista.Anho == ListaTotalPedidos[k].Fecha.Anho) {
-			printf("\n\n      Pedido %d", k);
-			for(int i=1; i<=20; i++) {
-				if(ListaTotalPedidos[k].RefPedido == TablaUbicaciones[i].Referencia) {
-					printf("\nUbicacion pedido ==> Distancia: %d y Angulo: %d", TablaUbicaciones[i].Distancia, TablaUbicaciones[i].Angulo);
-					for(int j=1; j<=5; j++) {
-						if(ListaTotalPedidos[k].HuecoOcupadoFarmacos[j] == true) {
-							printf("\n%-2dUnidades        ", ListaTotalPedidos[k].DatosFarmaco[j].NumeroFarmacos);
-							printf("%-20s", ListaTotalPedidos[k].DatosFarmaco[j].Farmaco);
-							printf("Peso: %4d gramos\n", ListaTotalPedidos[k].DatosFarmaco[j].PesoTotalFarmacos);
+	for (int indice=1; indice<=10; indice++) {
+		if(codigolista == TotalAlmacenes[indice].IdentificadorAlmacen) {
+			printf("Pedido Almacen - %s", TotalAlmacenes[indice].DescripcionAlmacen);
+			for(int k=1; k<=100; k++) {
+				if(FechaLista.Dia == TotalAlmacenes[indice].ListaTotalPedidos[k].Fecha.Dia && FechaLista.Mes == TotalAlmacenes[indice].ListaTotalPedidos[k].Fecha.Mes && FechaLista.Anho == TotalAlmacenes[indice].ListaTotalPedidos[k].Fecha.Anho) {
+					printf("\n\n      Pedido %d", k);
+					for(int i=1; i<=20; i++) {
+						if(TotalAlmacenes[indice].ListaTotalPedidos[k].RefPedido == TotalAlmacenes[indice].UbicacionesAlmacen[i].Referencia) {
+							printf("\nUbicacion pedido ==> Distancia: %d y Angulo: %d", TotalAlmacenes[k].UbicacionesAlmacen[i].Distancia, TotalAlmacenes[k].UbicacionesAlmacen[i].Angulo);
+							for(int j=1; j<=5; j++) {
+								if(TotalAlmacenes[indice].ListaTotalPedidos[k].HuecoOcupadoFarmacos[j] == true) {
+									printf("\n%-2dUnidades        ", TotalAlmacenes[indice].ListaTotalPedidos[k].DatosFarmaco[j].NumeroFarmacos);
+									printf("%-20s", TotalAlmacenes[indice].ListaTotalPedidos[k].DatosFarmaco[j].Farmaco);
+									printf("Peso: %4d gramos\n", TotalAlmacenes[indice].ListaTotalPedidos[k].DatosFarmaco[j].PesoTotalFarmacos);
+								}
+							}
+							printf("                  Peso total del envio");
+							printf("%10d gramos\n\n", TotalAlmacenes[indice].ListaTotalPedidos[k].PesoTotalEnvio);
 						}
 					}
-					printf("                  Peso total del envio");
-					printf("%10d gramos\n\n", ListaTotalPedidos[k].PesoTotalEnvio);
-				}
+				}		
 			}
-		}		
-	}
+		}	
+	}	
 }
