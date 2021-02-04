@@ -945,13 +945,78 @@ void MENU::NuevoFarmaco() {
 
 
 void MENU::ListaPedidos() {
-	printf("\n\nLista diaria de pedidos\n");
+	int codigolista;
+	bool codigocorrectolista = false;
+	
+	printf("\n\nLista diaria de pedidos\n\n");
+	printf("Codigo almacen? ");
+	try {
+		scanf(%d, &codigolista);
+		if (codigolista <1 || codigolista >10) {
+			throw error27;
+		}
+		for (int k=1; k<=10; k++) {
+			if (codigolista == TotalAlmacenes[k].IdentificadorAlmacen) {
+				codigocorrectolista = true;
+			}
+		}
+		else if (codigocorrectolista == false) {
+			throw error27;
+		}
+	}
+	catch (ErroresPrograma error27) {
+		printf ("Dato incorrecto para codigo almacen: o valor fuera del rango permitido o el almacen indicado aun no existe");
+		return;
 	printf("      Dia? ");
-	scanf("%d", &FechaLista.Dia);
-	printf("      Mes? ");
-	scanf("%d", &FechaLista.Mes);
-	printf("      Año? ");
-	scanf("%d", &FechaLista.Anho);
+	try {
+		scanf("%d", &FechaLista.Dia);
+		printf("      Mes? ");
+		scanf("%d", &FechaLista.Mes);
+		printf("      Año? ");
+		scanf("%d", &FechaLista.Anho);
+		switch (FechaLista.Mes) {
+			case 2:
+			if (FechaLista.Anho % 4 == 0 && FechaLista.Anho % 100 != 0 || FechaLista.Anho % 400 == 0) { 
+				if (FechaLista.Dia <1 || FechaLista.Dia >29) {
+					throw error28;
+				}
+			}	
+			else {
+				if (FechaLista.Dia <1 || FechaLista.Dia >28) {
+					throw error28;
+				}
+			}
+			break;	
+			case 1:
+			case 3:
+			case 5:
+			case 7:
+			case 8:
+			case 10:
+			case 12:
+			if (FechaLista.Dia <1 || FechaLista.Dia >31) {
+				throw error28;
+			}
+			break;
+			case 4:
+			case 6:
+			case 9:
+			case 11:
+			if (FechaLista.Dia <1 || FechaLista.Dia >30) {
+				throw error28;
+			}
+			break;
+			default:
+			throw error28;
+		}
+		if (FechaLista.Anho < 1600 || FechaLista.Anho >3000) {
+			throw error28;
+		}
+	}
+	catch (ErroresPrograma error28) {
+		printf("\n\nFormato de fecha incorrecta\n");
+		return;
+	}
 	for(int k=1; k<=100; k++) {
 		if(FechaLista.Dia == ListaTotalPedidos[k].Fecha.Dia && FechaLista.Mes == ListaTotalPedidos[k].Fecha.Mes && FechaLista.Anho == ListaTotalPedidos[k].Fecha.Anho) {
 			printf("\n\n      Pedido %d", k);
