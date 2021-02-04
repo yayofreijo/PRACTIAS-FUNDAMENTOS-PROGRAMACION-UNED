@@ -102,7 +102,7 @@ void MENU::AltaAlmacen(){
 	int ind3=0;
 	int ind4=0;
 
-	HuecoEncontradoAlmacen = false;
+	bool HuecoEncontradoAlmacen = false;
 
 	for (int k=0; k<=48; k++) {                             /* Bucle para convertir en nulo todos los huecos del vector de Direccion Almacen */
 	Almacen.DireccionAlmacen[k] = '\0';
@@ -147,7 +147,7 @@ void MENU::AltaAlmacen(){
 		printf("\n\nDato incorrecto para Identificador del almacen: dato fuera del rango permitido o ya en uso\n");
 		return;
 	}
-	printf("Direccion almacen (entre 1 y 48 caracteres)? ");
+	printf("      Direccion almacen (entre 1 y 48 caracteres)? ");
 	try {
 		fflush(stdin);
 		gets(DireccionAlmacenAux);                                                     /* En vez de scanf para poder meter espacios en Direccion Almacen */
@@ -171,7 +171,7 @@ void MENU::AltaAlmacen(){
 		printf("\n\nCaracter invalido en 'Direccion Almacen' o superado el limite maximo de caracteres\n");
 		return;
 	}
-	printf("Municipio almacen (entre 1 y 48 caracteres)? ");
+	printf("      Municipio almacen (entre 1 y 48 caracteres)? ");
 	try {
 		fflush(stdin);
 		gets(MunicipioAlmacenAux);                                                     /* En vez de scanf para poder meter espacios en Municipio Almacen */
@@ -195,7 +195,7 @@ void MENU::AltaAlmacen(){
 		printf("\n\nCaracter invalido en 'Municipio almacen' o superado el limite maximo de caracteres\n");
 		return;
 	}
-	printf("Provincia almacen (entre 1 y 16 caracteres)? ");
+	printf("      Provincia almacen (entre 1 y 16 caracteres)? ");
 	try {
 		fflush(stdin);
 		gets(ProvinciaAlmacenAux);                                                     /* En vez de scanf para poder meter espacios en Provincia Almacen */
@@ -219,7 +219,7 @@ void MENU::AltaAlmacen(){
 		printf("\n\nCaracter invalido en 'Provincia almacen' o superado el limite maximo de caracteres\n");
 		return;
 	}
-	printf("Provincia almacen (entre 1 y 16 caracteres)? ");
+	printf("      Descripcion almacen (entre 1 y 16 caracteres)? ");
 	try {
 		fflush(stdin);
 		gets(DescripcionAlmacenAux);                                                     /* En vez de scanf para poder meter espacios en Descripcion Almacen */
@@ -243,7 +243,7 @@ void MENU::AltaAlmacen(){
 		printf("\n\nCaracter invalido en 'Descripcion almacen' o superado el limite maximo de caracteres\n");
 		return;
 	}
-	printf("Datos correctos (S/N)? ");
+	printf("\nDatos correctos (S/N)? ");
 	scanf("%s", &almacencorrecto);
 	try {
 		if (almacencorrecto == 'S' || almacencorrecto == 's') {
@@ -254,6 +254,9 @@ void MENU::AltaAlmacen(){
 					HuecoOcupadoAlmacen[k] = true;
 					MaximoAlmacenes++;
 				}
+			}
+			if (MaximoAlmacenes == 10) {
+				printf("\n\nMaximo de almacenes alcanzado\n");
 			}
 		}	
 		else if (almacencorrecto == 'N' || almacencorrecto == 'n') {
@@ -275,8 +278,8 @@ void MENU::AltaAlmacen(){
 void MENU::AltaNueva () {
 	TipoUbicacion FilaUbicaciones;                          /* Variable local para cada fila de la lista de ubicaciones */
 	int w = 0;                                              /* Variable local para comprobar longitud de Identificador */
-	bool HuecoEncontradoAlta;                               /* Variable para saber si existe un hueco libre en el vector de ubicaciones */
-	HuecoEncontradoAlta = false;
+	bool HuecoEncontradoAlta = false;                       /* Variable para saber si existe un hueco libre en el vector de ubicaciones */
+	bool EncontradoAlmacen = false;                         /* Variable para indicar si existe el almacen que se introduce en la pregunta "codigo almacen?"" o no */
 
 	for (int k=0; k<=20; k++) {                             /* Bucle para convertir en nulo todos los huecos del vector de Identificador */
 	FilaUbicaciones.Identificador[k] = '\0';
@@ -296,7 +299,8 @@ void MENU::AltaNueva () {
 	catch (ErroresPrograma error22) {
 		printf("\n\nDato incorrecto para Codigo Almacen\n");
 		return;
-	printf("\n\nDatos paciente:\n");	
+	}	
+	printf("\nDatos paciente:\n\n");	
 	printf("      Identificador (Entre 1 y 20 caracteres)? ");
 	try {
 		fflush(stdin);
@@ -348,9 +352,10 @@ void MENU::AltaNueva () {
 	try {
 		scanf("%s", &i);
 		if(i=='s' || i=='S') {
-			for (int i=1; i<=10; i++) {
-				try {
+			try {
+				for (int i=1; i<=10; i++) {
 					if (FilaUbicaciones.AlmacenPaciente == TotalAlmacenes[i].IdentificadorAlmacen) {
+						EncontradoAlmacen = true;
 						for (int k=1; k<=20 && (HuecoEncontradoAlta==false); k++) {
 							if(HuecoOcupadoAlta[k] == false) {
 								HuecoEncontradoAlta = true;
@@ -365,14 +370,16 @@ void MENU::AltaNueva () {
 							return;
 						}
 					}
-					else {
-						throw error23;
-					}	
 				}
-				catch (ErroresPrograma error23 {
-					printf("\n\nNo se puede guardar esta informacion ya que el almacen indicado aun no existe\n");
+				if (EncontradoAlmacen == false) {
+					throw error23;
 				}	
 			}
+			catch (ErroresPrograma error23) {
+				printf("\n\nNo se puede guardar la informacion del paciente, ya que este almacen aun no existe\n");
+				return;
+			}
+		}		
 		else if(i=='N' || i=='n') {
 			AltaNueva ();
 		}
@@ -404,22 +411,32 @@ void MENU::AltaNueva () {
 }
 
 void MENU::UbicacionPacientes () {
-	int codigo;
+	int codigoubicacion;
 	
 	printf("\nLista de pacientes y su ubicacion:\n");
 	printf("\n      Codigo almacen? ");
-	scanf("%d", &codigo);
+	try {
+		scanf("%d", codigoubicacion);
+		if (codigoubicacion <1 || codigoubicacion >10) {
+			throw error24;
+		}
+	}
+	catch (ErroresPrograma error24) {
+		printf("\n\nDato incorrecto para codigo almacen\n");
+		return;
+	}
 	for (int k=1; k<=10; k++) {
-		if (codigo == TotalAlmacenes[k].IdentificadorAlmacen) {
-			printf("\nRef.  ");
+		if (codigoubicacion == TotalAlmacenes[k].IdentificadorAlmacen) {
+			printf("\n      Ref.  ");
 			printf("Identificador           ");
 			printf("Distancia      ");
 			printf("Angulo         \n");
 			for(int i=1; i<=20; i++) {
 				if(HuecoOcupadoAlta[i] == true) {
-					printf("%-6d%-24s%-15d%-15d\n", TablaUbicaciones[i].Referencia,TablaUbicaciones[i].Identificador, TablaUbicaciones[i].Distancia, TablaUbicaciones[i].Angulo);
+					printf("      %-6d%-24s%-15d%-15d\n", TablaUbicaciones[i].Referencia,TablaUbicaciones[i].Identificador, TablaUbicaciones[i].Distancia, TablaUbicaciones[i].Angulo);
 				}
 			}
+			return;
 		}
 		else {
 			printf("\n\nDato incorrecto para codigo almacen: o no tiene pacientes asignados, o no esta creado aun\n");
@@ -429,6 +446,8 @@ void MENU::UbicacionPacientes () {
 }
 
 void MENU::NuevoPedido() {
+	bool codigocorrecto = false;
+
 	DatosPedido.PesoTotalEnvio = 0;
 
 	IniciarHuecosFarmaco();
@@ -439,8 +458,27 @@ void MENU::NuevoPedido() {
 		}
 	}
 
-	printf("\n\nNuevo Pedido:\n");
-	printf("Ref. Paciente (entre 1 y 20? ");
+	printf("\n\nNuevo Pedido:\n\n");
+	printf("      Codigo almacen? ");
+	try {
+		scanf("%d", &DatosPedido.AlmacenPedido);
+		if (DatosPedido.AlmacenPedido <1 || DatosPedido.AlmacenPedido >10) {
+			throw error25;
+		}
+		for (int k=1; k<=10; k++) {
+			if (DatosPedido.AlmacenPedido == TotalAlmacenes[k].IdentificadorAlmacen) {
+				codigocorrecto = true;
+			}
+		}
+		else if (codigocorrecto == false) {
+			throw error25;
+		}
+	}
+	catch (ErroresPrograma error25) {
+		printf("\n\nDato incorrecto para codigo almacen: o fuera de rango, o el almacen no existe aun\n");
+		return;
+	}	
+	printf("      Ref. Paciente (entre 1 y 20? ");
 	try {
 		scanf("%d", &DatosPedido.RefPedido);
 		if(DatosPedido.RefPedido <1 || DatosPedido.RefPedido >20) {
@@ -451,15 +489,24 @@ void MENU::NuevoPedido() {
 		printf("\n\nReferencia incorrecta\n");
 		return;
 	}
-	printf("Numero de envios? ");
-	scanf("%d", &DatosPedido.NumeroEnvios);
+	printf("      Numero de envios? ");
+	try {
+		scanf("%d", &DatosPedido.NumeroEnvios);
+		if (DatosPedido.NumeroEnvios <1 || DatosPedido.NumeroEnvios >100) {
+			throw error26;
+		}
+	}	
+	catch (ErroresPrograma error26) {
+		printf("\n\nNumero de envios fuera del rango permitido\n");
+		return;
+	}
 	if (DatosPedido.NumeroEnvios == 1) {
-		printf("Dia del envio? ");
+		printf("      Dia del envio? ");
 		try {
 			scanf("%d", &DatosPedido.Fecha.Dia);
-			printf("Mes del envio? ");
+			printf("      Mes del envio? ");
 			scanf("%d", &DatosPedido.Fecha.Mes);
-			printf("Año del envio? ");
+			printf("      Año del envio? ");
 			scanf("%d", &DatosPedido.Fecha.Anho);
 			switch (DatosPedido.Fecha.Mes) {
 				case 2:
@@ -508,7 +555,7 @@ void MENU::NuevoPedido() {
 		NuevoFarmaco();
 	}	
 	else if (DatosPedido.NumeroEnvios >1) {
-		printf("Numero de dias entre cada envio (Entre 1 y 15 dias)? ");
+		printf("      Numero de dias entre cada envio (Entre 1 y 15 dias)? ");
 		try {
 			scanf("%d", &DatosPedido.DiasEntreEnvio);
 			if (DatosPedido.DiasEntreEnvio <1 || DatosPedido.DiasEntreEnvio >15) {
@@ -519,12 +566,12 @@ void MENU::NuevoPedido() {
 			printf("Parametros fuera del rango para la opcion 'Numero de dias entre cada envio'");
 			return;
 		}
-		printf("Dia del primer envio? ");
+		printf("      Dia del primer envio? ");
 		try {
 			scanf("%d", &DatosPedido.Fecha.Dia);
-			printf("Mes del primer envio? ");
+			printf("      Mes del primer envio? ");
 			scanf("%d", &DatosPedido.Fecha.Mes);
-			printf("Año del primer envio? ");
+			printf("      Año del primer envio? ");
 			scanf("%d", &DatosPedido.Fecha.Anho);
 
 			switch (DatosPedido.Fecha.Mes) {
@@ -586,7 +633,7 @@ void MENU::NuevoFarmaco() {
 	HuecoEncontradoPedido = false;
 	
 	if (pedirmasfarmacos == false) {
-		printf("Nombre farmaco (Entre 1 y 20 caracteres)? ");
+		printf("\n      Nombre farmaco (Entre 1 y 20 caracteres)? ");
 		try {
 			fflush(stdin);
 			gets(FarmacoAux);                                                    /* En vez de scanf para poder meter espacios en Farmaco */
@@ -610,7 +657,7 @@ void MENU::NuevoFarmaco() {
 			printf("\n\nCaracter invalido en 'Nombre farmaco' o superado el limite maximo de caracteres\n");
 			return;
 		}	
-		printf("Peso farmaco (Menor de 3000 gramos)? ");
+		printf("      Peso farmaco (Menor de 3000 gramos)? ");
 		try {
 			scanf("%d", &DatosPedido.DatosFarmaco[1].PesoFarmaco);
 			if (DatosPedido.DatosFarmaco[1].PesoFarmaco <=0 || DatosPedido.DatosFarmaco[1].PesoFarmaco >3000) {
@@ -621,7 +668,7 @@ void MENU::NuevoFarmaco() {
 			printf("\n\nPeso del farmaco fuera del rango permitido\n");
 			return;
 		}	
-		printf("Unidades de farmaco? ");
+		printf("      Unidades de farmaco? ");
 		try {
 			scanf("%d", &DatosPedido.DatosFarmaco[1].NumeroFarmacos);
 			DatosPedido.DatosFarmaco[1].PesoTotalFarmacos = DatosPedido.DatosFarmaco[1].PesoFarmaco * DatosPedido.DatosFarmaco[1].NumeroFarmacos;
@@ -635,7 +682,7 @@ void MENU::NuevoFarmaco() {
 			printf("\n\nSuperado el maximo de peso permitido\n");
 			return;
 		}		
-		printf("Otro farmaco (S/N)? ");
+		printf("\n      Otro farmaco (S/N)? ");
 		scanf("%s", &otrofarmaco);
 		if (otrofarmaco == 'S' || otrofarmaco == 's') {
 			pedirmasfarmacos = true;
@@ -646,7 +693,7 @@ void MENU::NuevoFarmaco() {
 			for(int k=1; k<=100 && HuecoEncontradoPedido==false; k++) {
 				if(HuecoOcupadoPedidos[k] == false) {
 					HuecoEncontradoPedido = true;
-					ListaTotalPedidos[k] = DatosPedido;                     /* Aqui guardamos los datos de DatosPedido en el vector ListaTotalPedidos */
+					TotalAlmacenes[DatosPedido.IdentificadorAlmacen].ListaTotalPedidos[k] = DatosPedido;                     /* Aqui guardamos los datos de DatosPedido en el vector ListaTotalPedidos en cada almacen */
 					HuecoOcupadoPedidos[k] = true;
 					switch(DatosPedido.Fecha.Mes) {
 						case 1:
@@ -674,7 +721,7 @@ void MENU::NuevoFarmaco() {
 							try {
 								DatosPedido.Fecha.Dia = DatosPedido.Fecha.Dia + DatosPedido.DiasEntreEnvio;
 								if(k+indice <=100) { 
-									ListaTotalPedidos[k+indice] = DatosPedido;        /* Aqui guardamos los nuevos datos de dia, mes y año de DatosPedido en el vector ListaTotalPedidos */
+									TotalAlmacenes[DatosPedido.IdentificadorAlmacen].ListaTotalPedidos[k+indice] = DatosPedido;        /* Aqui guardamos los nuevos datos de dia, mes y año de DatosPedido en el vector ListaTotalPedidos de cada almacen*/
 									HuecoOcupadoPedidos[k+indice] = true;
 								}
 								else if (k+indice >100) {
@@ -692,13 +739,13 @@ void MENU::NuevoFarmaco() {
 								if (k+indice <=100) {
 									if ((DatosPedido.Fecha.Mes+1) <=12) {
 										DatosPedido.Fecha.Mes = DatosPedido.Fecha.Mes +1;
-										ListaTotalPedidos[k+indice] = DatosPedido;         /* Aqui guardamos los nuevos datos de dia, mes y año de DatosPedido en el vector ListaTotalPedidos */
+										TotalAlmacenes[DatosPedido.IdentificadorAlmacen].ListaTotalPedidos[k+indice] = DatosPedido;         /* Aqui guardamos los nuevos datos de dia, mes y año de DatosPedido en el vector ListaTotalPedidos de cada almacen */
 										HuecoOcupadoPedidos[k+indice] = true;
 									}
 									else if ((DatosPedido.Fecha.Mes+1) >12) {
 										DatosPedido.Fecha.Mes = (DatosPedido.Fecha.Mes +1) % 12;
 										DatosPedido.Fecha.Anho = DatosPedido.Fecha.Anho+1;
-										ListaTotalPedidos[k+indice] = DatosPedido;         /* Aqui guardamos los nuevos datos de dia, mes y año de DatosPedido en el vector ListaTotalPedidos */
+										TotalAlmacenes[DatosPedido.IdentificadorAlmacen].ListaTotalPedidos[k+indice] = DatosPedido;         /* Aqui guardamos los nuevos datos de dia, mes y año de DatosPedido en el vector ListaTotalPedidos de cada almacen */
 										HuecoOcupadoPedidos[k+indice] = true;
 									}
 								}
@@ -714,7 +761,7 @@ void MENU::NuevoFarmaco() {
 					}
 				}
 			}
-			printf("Otro pedido (S/N)? ");
+			printf("      Otro pedido (S/N)? ");
 			scanf("%s", &otropedido);
 			if(otropedido == 'S' || otropedido == 's') {
 				NuevoPedido();
@@ -737,7 +784,7 @@ void MENU::NuevoFarmaco() {
 		for (int k=2; k<=5 && (HuecoEncontradoFarmaco==false); k++) {
 			if(DatosPedido.HuecoOcupadoFarmacos[k] == false) {
 				HuecoEncontradoFarmaco = true;
-				printf("Nombre farmaco (Entre 1 y 20 caracteres)? ");
+				printf("      Nombre farmaco (Entre 1 y 20 caracteres)? ");
 				try {
 					fflush(stdin);
 					gets(FarmacoAux);                                                  /* En vez de scanf para poder meter espacios en Farmaco */
@@ -761,7 +808,7 @@ void MENU::NuevoFarmaco() {
 					printf("\n\nCaracter invalido en 'Nombre farmaco' o superado el limite maximo de caracteres\n");
 					return;
 				}
-				printf("Peso farmaco (Menor de 3000 gramos)? ");
+				printf("      Peso farmaco (Menor de 3000 gramos)? ");
 				try {
 					scanf("%d", &DatosPedido.DatosFarmaco[k].PesoFarmaco);
 					if (DatosPedido.DatosFarmaco[k].PesoFarmaco <=0 || DatosPedido.DatosFarmaco[k].PesoFarmaco >3000) {
@@ -772,7 +819,7 @@ void MENU::NuevoFarmaco() {
 					printf("\n\nPeso del farmaco fuera del rango permitido\n");
 					return;
 				}
-				printf("Unidades de farmaco? ");
+				printf("      Unidades de farmaco? ");
 				try {
 					scanf("%d", &DatosPedido.DatosFarmaco[k].NumeroFarmacos);
 					DatosPedido.DatosFarmaco[k].PesoTotalFarmacos = DatosPedido.DatosFarmaco[k].PesoFarmaco * DatosPedido.DatosFarmaco[k].NumeroFarmacos;
@@ -789,7 +836,7 @@ void MENU::NuevoFarmaco() {
 					printf("\n\nSuperado el maximo de peso permitido\n");
 					return;
 				}	
-				printf("Otro farmaco (S/N)? ");
+				printf("      Otro farmaco (S/N)? ");
 				scanf("%s", &otrofarmaco);
 				if (otrofarmaco == 'S' || otrofarmaco == 's') {
 					pedirmasfarmacos = true;
@@ -800,7 +847,7 @@ void MENU::NuevoFarmaco() {
 					for(int k=1; k<=100 && HuecoEncontradoPedido==false; k++) {
 						if(HuecoOcupadoPedidos[k] == false) {
 							HuecoEncontradoPedido = true;
-							ListaTotalPedidos[k] = DatosPedido;              /* Aqui guardamos los nuevos datos de DatosPedido en el vector ListaTotalPedidos */
+							TotalAlmacenes[DatosPedido.IdentificadorAlmacen].ListaTotalPedidos[k] = DatosPedido;              /* Aqui guardamos los nuevos datos de DatosPedido en el vector ListaTotalPedidos en cada almacen */
 							HuecoOcupadoPedidos[k] = true;
 							switch(DatosPedido.Fecha.Mes) {
 								case 1:
@@ -828,7 +875,7 @@ void MENU::NuevoFarmaco() {
 									try {
 										DatosPedido.Fecha.Dia = DatosPedido.Fecha.Dia + DatosPedido.DiasEntreEnvio;
 										if(k+indice <=100) { 
-											ListaTotalPedidos[k+indice] = DatosPedido;             /* Aqui guardamos los nuevos datos de dia, mes y año de DatosPedido en el vector ListaTotalPedidos */
+											TotalAlmacenes[DatosPedido.IdentificadorAlmacen].ListaTotalPedidos[k+indice] = DatosPedido;             /* Aqui guardamos los nuevos datos de dia, mes y año de DatosPedido en el vector ListaTotalPedidos */
 											HuecoOcupadoPedidos[k+indice] = true;
 										}
 										else if (k+indice >100) {
@@ -846,13 +893,13 @@ void MENU::NuevoFarmaco() {
 										if (k+indice <=100) {
 											if ((DatosPedido.Fecha.Mes+1) <=12) {
 												DatosPedido.Fecha.Mes = DatosPedido.Fecha.Mes +1;
-												ListaTotalPedidos[k+indice] = DatosPedido;         /* Aqui guardamos los nuevos datos de dia, mes y año de DatosPedido en el vector ListaTotalPedidos */
+												TotalAlmacenes[DatosPedido.IdentificadorAlmacen].ListaTotalPedidos[k+indice] = DatosPedido;         /* Aqui guardamos los nuevos datos de dia, mes y año de DatosPedido en el vector ListaTotalPedidos */
 												HuecoOcupadoPedidos[k+indice] = true;
 											}
 											else if ((DatosPedido.Fecha.Mes+1) >12) {
 												DatosPedido.Fecha.Mes = (DatosPedido.Fecha.Mes +1) % 12;
 												DatosPedido.Fecha.Anho = DatosPedido.Fecha.Anho+1;
-												ListaTotalPedidos[k+indice] = DatosPedido;         /* Aqui guardamos los nuevos datos de dia, mes y año de DatosPedido en el vector ListaTotalPedidos */
+												TotalAlmacenes[DatosPedido.IdentificadorAlmacen].ListaTotalPedidos[k+indice] = DatosPedido;         /* Aqui guardamos los nuevos datos de dia, mes y año de DatosPedido en el vector ListaTotalPedidos */
 												HuecoOcupadoPedidos[k+indice] = true;
 											}
 										}
@@ -868,7 +915,7 @@ void MENU::NuevoFarmaco() {
 							}
 						}
 					}
-					printf("Otro pedido (S/N)? ");
+					printf("      Otro pedido (S/N)? ");
 					scanf("%s", &otropedido);
 					if(otropedido == 'S' || otropedido == 's') {
 						NuevoPedido();
@@ -899,11 +946,11 @@ void MENU::NuevoFarmaco() {
 
 void MENU::ListaPedidos() {
 	printf("\n\nLista diaria de pedidos\n");
-	printf("Dia? ");
+	printf("      Dia? ");
 	scanf("%d", &FechaLista.Dia);
-	printf("Mes? ");
+	printf("      Mes? ");
 	scanf("%d", &FechaLista.Mes);
-	printf("Año? ");
+	printf("      Año? ");
 	scanf("%d", &FechaLista.Anho);
 	for(int k=1; k<=100; k++) {
 		if(FechaLista.Dia == ListaTotalPedidos[k].Fecha.Dia && FechaLista.Mes == ListaTotalPedidos[k].Fecha.Mes && FechaLista.Anho == ListaTotalPedidos[k].Fecha.Anho) {
