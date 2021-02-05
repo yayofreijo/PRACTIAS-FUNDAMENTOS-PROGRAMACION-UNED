@@ -60,7 +60,7 @@ typedef char TipoCuarentayocho[49];                                    /* Tipo v
 
 typedef char TipoCuarentayochoAux[];                                   /* Tipo vector de caracteres abierto auxiliar */
 
-typedef char TipoProvincia[17];                                        /* Tipo vector char con el maximo de caracteres, 16, posibles para Provincia */ 
+typedef char TipoProvincia[17];                                        /* Tipo vector char con el maximo de caracteres, 16, posibles para Provincia */
 
 typedef char TipoProvinciaAux[];                                       /* Tipo vector de caracteres abierto auxiliar */
 
@@ -71,12 +71,12 @@ typedef struct TipoAlmacen {                                           /* Tipo s
 	TipoProvincia ProvinciaAlmacen;
 	TipoCuarentayocho DescripcionAlmacen;
 	TipoUbicacionesTotal UbicacionesAlmacen;                       /* Variable para almacenar todas las ubicaciones totales de un almacen */
-	ListadoPedidos ListaPedidosAlmacen;
+	ListadoPedidos ListaPedidosAlmacen;                            /* Variable para almacenar todos los pedidos de un almacen */
 };
 
 typedef TipoAlmacen TipoTotalAlmacenes[11];                            /* Tipo vector con el maximo de almacenes posibles, que son 10 */
 
-typedef bool EstadoHuecoAlta[21];                                      /* Tipo vector bool para saber el estado de los huecos que forman el vector de ubicaciones */
+typedef char EstadoHuecoAlta[21];                                      /* Tipo vector bool para saber el estado de los huecos que forman el vector de ubicaciones */
 
 typedef bool EstadoHuecoPedidos[101];                                  /* Tipo vector bool para saber el estado de los huecos que forman el vector de pedidos posibles */
 
@@ -95,10 +95,9 @@ typedef struct MENU {
 	EstadoHuecosAlmacen HuecoOcupadoAlmacen;
 	TipoPedido DatosPedido;                                /* Variable para un solo pedido */
 	TipoAlmacen Almacen;                                   /* Variable para un solo almacen */
-	ListadoPedidos ListaTotalPedidos;                      /* Variable para todos los pedidos */
 	TipoTotalAlmacenes TotalAlmacenes;                     /* Variable para todos los almacenes */
 	TipoFecha FechaLista;
-	ErroresPrograma error1, error2, error3, error4, error5, error6, error7, error8, error9, error10, error11, error12, error13, error14, error15, 
+	ErroresPrograma error1, error2, error3, error4, error5, error6, error7, error8, error9, error10, error11, error12, error13, error14, error15,
 	error16, error17, error18, error19, error20, error21, error22, error23, error24, error25, error26, error27, error28;
 	char LetraMenu, i, j, otropedido, otrofarmaco, almacencorrecto;
 	bool pedirmasfarmacos, HuecoEncontradoFarmaco, HuecoEncontradoPedido, HuecoEncontradoIdentificador;
