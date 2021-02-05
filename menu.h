@@ -60,7 +60,7 @@ typedef char TipoCuarentayocho[49];                                    /* Tipo v
 
 typedef char TipoCuarentayochoAux[];                                   /* Tipo vector de caracteres abierto auxiliar */
 
-typedef char TipoProvincia[17];                                        /* Tipo vector char con el maximo de caracteres, 16, posibles para Provincia */
+typedef char TipoProvincia[17];                                        /* Tipo vector char con el maximo de caracteres, 16, posibles para Provincia */ 
 
 typedef char TipoProvinciaAux[];                                       /* Tipo vector de caracteres abierto auxiliar */
 
@@ -97,7 +97,7 @@ typedef struct MENU {
 	TipoAlmacen Almacen;                                   /* Variable para un solo almacen */
 	TipoTotalAlmacenes TotalAlmacenes;                     /* Variable para todos los almacenes */
 	TipoFecha FechaLista;
-	ErroresPrograma error1, error2, error3, error4, error5, error6, error7, error8, error9, error10, error11, error12, error13, error14, error15,
+	ErroresPrograma error1, error2, error3, error4, error5, error6, error7, error8, error9, error10, error11, error12, error13, error14, error15, 
 	error16, error17, error18, error19, error20, error21, error22, error23, error24, error25, error26, error27, error28;
 	char LetraMenu, i, j, otropedido, otrofarmaco, almacencorrecto;
 	bool pedirmasfarmacos, HuecoEncontradoFarmaco, HuecoEncontradoPedido, HuecoEncontradoIdentificador;
