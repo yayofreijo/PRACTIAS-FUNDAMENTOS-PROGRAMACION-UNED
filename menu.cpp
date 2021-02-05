@@ -278,8 +278,10 @@ void MENU::AltaAlmacen(){
 void MENU::AltaNueva () {
 	TipoUbicacion FilaUbicaciones;                          /* Variable local para cada fila de la lista de ubicaciones */
 	int w = 0;                                              /* Variable local para comprobar longitud de Identificador */
-	bool HuecoEncontradoAlta = false;                       /* Variable para saber si existe un hueco libre en el vector de ubicaciones */
-	bool EncontradoAlmacen = false;                         /* Variable para indicar si existe el almacen que se introduce en la pregunta "codigo almacen?"" o no */
+	bool HuecoEncontradoAlta, EncontradoAlmacen;
+
+	HuecoEncontradoAlta = false;                       /* Variable para saber si existe un hueco libre en el vector de ubicaciones */
+	EncontradoAlmacen = false;                         /* Variable para indicar si existe el almacen que se introduce en codigo almacen o no */
 
 	for (int k=0; k<=20; k++) {                             /* Bucle para convertir en nulo todos los huecos del vector de Identificador */
 	FilaUbicaciones.Identificador[k] = '\0';
@@ -295,9 +297,17 @@ void MENU::AltaNueva () {
 		if (FilaUbicaciones.AlmacenPaciente <1 || FilaUbicaciones.AlmacenPaciente >10) {
 			throw error22;
 		}
+		for (int i=1; i<=10; i++) {
+			if (TotalAlmacenes[i].IdentificadorAlmacen == FilaUbicaciones.AlmacenPaciente) {
+				EncontradoAlmacen = true;
+			}
+		}
+		if (EncontradoAlmacen == false) {
+			throw error22;
+		}
 	}
 	catch (ErroresPrograma error22) {
-		printf("\n\nDato incorrecto para Codigo Almacen\n");
+		printf("\n\nDato incorrecto para Codigo Almacen: fuera del rango o el almacen introducido no existe aun\n");
 		return;
 	}	
 	printf("\nDatos paciente:\n\n");	
@@ -306,9 +316,9 @@ void MENU::AltaNueva () {
 		fflush(stdin);
 		gets(IdentificadorAux);                                                  /* En vez de scanf para poder meter espacios en Identificador */
 		IdentificadorAux[strcspn(IdentificadorAux, "\r\n")] = 0;                 /* Para eliminar el salto de linea del final de Identificador */
-		for (int k=0; k<=20; k++) {
-			if (IdentificadorAux[k] != '\0') {
-				if (!isalpha(IdentificadorAux[k]) && IdentificadorAux[k] != ' ' && IdentificadorAux[k] != '\0') {
+		for (int indice=0; indice<=20; indice++) {
+			if (IdentificadorAux[indice] != '\0') {
+				if (!isalpha(IdentificadorAux[indice]) && IdentificadorAux[indice] != ' ' && IdentificadorAux[indice] != '\0') {
 					throw error1;
 				}
 			}
@@ -352,31 +362,18 @@ void MENU::AltaNueva () {
 	try {
 		scanf("%s", &i);
 		if(i=='s' || i=='S') {
-			try {
-				for (int i=1; i<=10; i++) {
-					if (FilaUbicaciones.AlmacenPaciente == TotalAlmacenes[i].IdentificadorAlmacen) {
-						EncontradoAlmacen = true;
-						for (int k=1; k<=20 && (HuecoEncontradoAlta==false); k++) {
-							if(HuecoOcupadoAlta[k] == false) {
-								HuecoEncontradoAlta = true;
-								FilaUbicaciones.Referencia = k;
-								TotalAlmacenes[i].UbicacionesAlmacen[k] = FilaUbicaciones;                   /* Aqui se meten los datos introducidos en FilaUbicaciones en el vector TablaUbicaciones */
-								HuecoOcupadoAlta[k] = true;
-								MaximoPacientes++;
-							}	
-						}
-						if (MaximoPacientes == 20) {
-							printf("\n\nAlcanzado el maximo de pacientes\n");
-							return;
-						}
-					}
+			for (int k=1; k<=20 && (HuecoEncontradoAlta == false); k++) {
+				printf("%s", HuecoOcupadoAlta);
+				if(HuecoOcupadoAlta[k] == false) {
+				  	HuecoEncontradoAlta = true;
+					FilaUbicaciones.Referencia = k;
+					TotalAlmacenes[FilaUbicaciones.AlmacenPaciente].UbicacionesAlmacen[k] = FilaUbicaciones;                   /* Aqui se meten los datos introducidos en FilaUbicaciones en el vector TablaUbicaciones */
+					HuecoOcupadoAlta[k] = true;
+					MaximoPacientes++;
 				}
-				if (EncontradoAlmacen == false) {
-					throw error23;
-				}	
 			}
-			catch (ErroresPrograma error23) {
-				printf("\n\nNo se puede guardar la informacion del paciente, ya que este almacen aun no existe\n");
+			if (MaximoPacientes == 20) {
+				printf("\n\nAlcanzado el maximo de pacientes\n");
 				return;
 			}
 		}		
@@ -416,7 +413,7 @@ void MENU::UbicacionPacientes () {
 	printf("\nLista de pacientes y su ubicacion:\n");
 	printf("\n      Codigo almacen? ");
 	try {
-		scanf("%d", codigoubicacion);
+		scanf("%d", &codigoubicacion);
 		if (codigoubicacion <1 || codigoubicacion >10) {
 			throw error24;
 		}
@@ -470,7 +467,7 @@ void MENU::NuevoPedido() {
 				codigocorrecto = true;
 			}
 		}
-		else if (codigocorrecto == false) {
+		if (codigocorrecto == false) {
 			throw error25;
 		}
 	}
@@ -693,7 +690,7 @@ void MENU::NuevoFarmaco() {
 			for(int k=1; k<=100 && HuecoEncontradoPedido==false; k++) {
 				if(HuecoOcupadoPedidos[k] == false) {
 					HuecoEncontradoPedido = true;
-					TotalAlmacenes[DatosPedido.IdentificadorAlmacen].ListaTotalPedidos[k] = DatosPedido;                     /* Aqui guardamos los datos de DatosPedido en el vector ListaTotalPedidos en cada almacen */
+					TotalAlmacenes[DatosPedido.AlmacenPedido].ListaPedidosAlmacen[k] = DatosPedido;                     /* Aqui guardamos los datos de DatosPedido en el vector ListaTotalPedidos en cada almacen */
 					HuecoOcupadoPedidos[k] = true;
 					switch(DatosPedido.Fecha.Mes) {
 						case 1:
@@ -721,7 +718,7 @@ void MENU::NuevoFarmaco() {
 							try {
 								DatosPedido.Fecha.Dia = DatosPedido.Fecha.Dia + DatosPedido.DiasEntreEnvio;
 								if(k+indice <=100) { 
-									TotalAlmacenes[DatosPedido.IdentificadorAlmacen].ListaTotalPedidos[k+indice] = DatosPedido;        /* Aqui guardamos los nuevos datos de dia, mes y año de DatosPedido en el vector ListaTotalPedidos de cada almacen*/
+									TotalAlmacenes[DatosPedido.AlmacenPedido].ListaPedidosAlmacen[k+indice] = DatosPedido;        /* Aqui guardamos los nuevos datos de dia, mes y año de DatosPedido en el vector ListaTotalPedidos de cada almacen*/
 									HuecoOcupadoPedidos[k+indice] = true;
 								}
 								else if (k+indice >100) {
@@ -739,13 +736,13 @@ void MENU::NuevoFarmaco() {
 								if (k+indice <=100) {
 									if ((DatosPedido.Fecha.Mes+1) <=12) {
 										DatosPedido.Fecha.Mes = DatosPedido.Fecha.Mes +1;
-										TotalAlmacenes[DatosPedido.IdentificadorAlmacen].ListaTotalPedidos[k+indice] = DatosPedido;         /* Aqui guardamos los nuevos datos de dia, mes y año de DatosPedido en el vector ListaTotalPedidos de cada almacen */
+										TotalAlmacenes[DatosPedido.AlmacenPedido].ListaPedidosAlmacen[k+indice] = DatosPedido;         /* Aqui guardamos los nuevos datos de dia, mes y año de DatosPedido en el vector ListaTotalPedidos de cada almacen */
 										HuecoOcupadoPedidos[k+indice] = true;
 									}
 									else if ((DatosPedido.Fecha.Mes+1) >12) {
 										DatosPedido.Fecha.Mes = (DatosPedido.Fecha.Mes +1) % 12;
 										DatosPedido.Fecha.Anho = DatosPedido.Fecha.Anho+1;
-										TotalAlmacenes[DatosPedido.IdentificadorAlmacen].ListaTotalPedidos[k+indice] = DatosPedido;         /* Aqui guardamos los nuevos datos de dia, mes y año de DatosPedido en el vector ListaTotalPedidos de cada almacen */
+										TotalAlmacenes[DatosPedido.AlmacenPedido].ListaPedidosAlmacen[k+indice] = DatosPedido;         /* Aqui guardamos los nuevos datos de dia, mes y año de DatosPedido en el vector ListaTotalPedidos de cada almacen */
 										HuecoOcupadoPedidos[k+indice] = true;
 									}
 								}
@@ -847,7 +844,7 @@ void MENU::NuevoFarmaco() {
 					for(int k=1; k<=100 && HuecoEncontradoPedido==false; k++) {
 						if(HuecoOcupadoPedidos[k] == false) {
 							HuecoEncontradoPedido = true;
-							TotalAlmacenes[DatosPedido.IdentificadorAlmacen].ListaTotalPedidos[k] = DatosPedido;              /* Aqui guardamos los nuevos datos de DatosPedido en el vector ListaTotalPedidos en cada almacen */
+							TotalAlmacenes[DatosPedido.AlmacenPedido].ListaPedidosAlmacen[k] = DatosPedido;              /* Aqui guardamos los nuevos datos de DatosPedido en el vector ListaTotalPedidos en cada almacen */
 							HuecoOcupadoPedidos[k] = true;
 							switch(DatosPedido.Fecha.Mes) {
 								case 1:
@@ -875,7 +872,7 @@ void MENU::NuevoFarmaco() {
 									try {
 										DatosPedido.Fecha.Dia = DatosPedido.Fecha.Dia + DatosPedido.DiasEntreEnvio;
 										if(k+indice <=100) { 
-											TotalAlmacenes[DatosPedido.IdentificadorAlmacen].ListaTotalPedidos[k+indice] = DatosPedido;             /* Aqui guardamos los nuevos datos de dia, mes y año de DatosPedido en el vector ListaTotalPedidos */
+											TotalAlmacenes[DatosPedido.AlmacenPedido].ListaPedidosAlmacen[k+indice] = DatosPedido;             /* Aqui guardamos los nuevos datos de dia, mes y año de DatosPedido en el vector ListaTotalPedidos */
 											HuecoOcupadoPedidos[k+indice] = true;
 										}
 										else if (k+indice >100) {
@@ -893,13 +890,13 @@ void MENU::NuevoFarmaco() {
 										if (k+indice <=100) {
 											if ((DatosPedido.Fecha.Mes+1) <=12) {
 												DatosPedido.Fecha.Mes = DatosPedido.Fecha.Mes +1;
-												TotalAlmacenes[DatosPedido.IdentificadorAlmacen].ListaTotalPedidos[k+indice] = DatosPedido;         /* Aqui guardamos los nuevos datos de dia, mes y año de DatosPedido en el vector ListaTotalPedidos */
+												TotalAlmacenes[DatosPedido.AlmacenPedido].ListaPedidosAlmacen[k+indice] = DatosPedido;         /* Aqui guardamos los nuevos datos de dia, mes y año de DatosPedido en el vector ListaTotalPedidos */
 												HuecoOcupadoPedidos[k+indice] = true;
 											}
 											else if ((DatosPedido.Fecha.Mes+1) >12) {
 												DatosPedido.Fecha.Mes = (DatosPedido.Fecha.Mes +1) % 12;
 												DatosPedido.Fecha.Anho = DatosPedido.Fecha.Anho+1;
-												TotalAlmacenes[DatosPedido.IdentificadorAlmacen].ListaTotalPedidos[k+indice] = DatosPedido;         /* Aqui guardamos los nuevos datos de dia, mes y año de DatosPedido en el vector ListaTotalPedidos */
+												TotalAlmacenes[DatosPedido.AlmacenPedido].ListaPedidosAlmacen[k+indice] = DatosPedido;         /* Aqui guardamos los nuevos datos de dia, mes y año de DatosPedido en el vector ListaTotalPedidos */
 												HuecoOcupadoPedidos[k+indice] = true;
 											}
 										}
@@ -951,7 +948,7 @@ void MENU::ListaPedidos() {
 	printf("\n\nLista diaria de pedidos\n\n");
 	printf("Codigo almacen? ");
 	try {
-		scanf(%d, &codigolista);
+		scanf("%d", &codigolista);
 		if (codigolista <1 || codigolista >10) {
 			throw error27;
 		}
@@ -960,13 +957,14 @@ void MENU::ListaPedidos() {
 				codigocorrectolista = true;
 			}
 		}
-		else if (codigocorrectolista == false) {
+		if (codigocorrectolista == false) {
 			throw error27;
 		}
 	}
 	catch (ErroresPrograma error27) {
 		printf ("Dato incorrecto para codigo almacen: o valor fuera del rango permitido o el almacen indicado aun no existe");
 		return;
+	}	
 	printf("\n      Dia? ");
 	try {
 		scanf("%d", &FechaLista.Dia);
@@ -1018,23 +1016,23 @@ void MENU::ListaPedidos() {
 		return;
 	}
 	for (int indice=1; indice<=10; indice++) {
-		if(codigolista == TotalAlmacenes[indice].IdentificadorAlmacen) {
+		if (codigolista == TotalAlmacenes[indice].IdentificadorAlmacen) {
 			printf("Pedido Almacen - %s", TotalAlmacenes[indice].DescripcionAlmacen);
-			for(int k=1; k<=100; k++) {
-				if(FechaLista.Dia == TotalAlmacenes[indice].ListaTotalPedidos[k].Fecha.Dia && FechaLista.Mes == TotalAlmacenes[indice].ListaTotalPedidos[k].Fecha.Mes && FechaLista.Anho == TotalAlmacenes[indice].ListaTotalPedidos[k].Fecha.Anho) {
+			for (int k=1; k<=100; k++) {
+				if (FechaLista.Dia == TotalAlmacenes[indice].ListaPedidosAlmacen[k].Fecha.Dia && FechaLista.Mes == TotalAlmacenes[indice].ListaPedidosAlmacen[k].Fecha.Mes && FechaLista.Anho == TotalAlmacenes[indice].ListaPedidosAlmacen[k].Fecha.Anho) {
 					printf("\n\n      Pedido %d", k);
-					for(int i=1; i<=20; i++) {
-						if(TotalAlmacenes[indice].ListaTotalPedidos[k].RefPedido == TotalAlmacenes[indice].UbicacionesAlmacen[i].Referencia) {
+					for (int i=1; i<=20; i++) {
+						if (TotalAlmacenes[indice].ListaPedidosAlmacen[k].RefPedido == TotalAlmacenes[indice].UbicacionesAlmacen[i].Referencia) {
 							printf("\nUbicacion pedido ==> Distancia: %d y Angulo: %d", TotalAlmacenes[k].UbicacionesAlmacen[i].Distancia, TotalAlmacenes[k].UbicacionesAlmacen[i].Angulo);
-							for(int j=1; j<=5; j++) {
-								if(TotalAlmacenes[indice].ListaTotalPedidos[k].HuecoOcupadoFarmacos[j] == true) {
-									printf("\n%-2dUnidades        ", TotalAlmacenes[indice].ListaTotalPedidos[k].DatosFarmaco[j].NumeroFarmacos);
-									printf("%-20s", TotalAlmacenes[indice].ListaTotalPedidos[k].DatosFarmaco[j].Farmaco);
-									printf("Peso: %4d gramos\n", TotalAlmacenes[indice].ListaTotalPedidos[k].DatosFarmaco[j].PesoTotalFarmacos);
+							for (int j=1; j<=5; j++) {
+								if (TotalAlmacenes[indice].ListaPedidosAlmacen[k].HuecoOcupadoFarmacos[j] == true) {
+									printf("\n%-2dUnidades        ", TotalAlmacenes[indice].ListaPedidosAlmacen[k].DatosFarmaco[j].NumeroFarmacos);
+									printf("%-20s", TotalAlmacenes[indice].ListaPedidosAlmacen[k].DatosFarmaco[j].Farmaco);
+									printf("Peso: %4d gramos\n", TotalAlmacenes[indice].ListaPedidosAlmacen[k].DatosFarmaco[j].PesoTotalFarmacos);
 								}
 							}
 							printf("                  Peso total del envio");
-							printf("%10d gramos\n\n", TotalAlmacenes[indice].ListaTotalPedidos[k].PesoTotalEnvio);
+							printf("%10d gramos\n\n", TotalAlmacenes[indice].ListaPedidosAlmacen[k].PesoTotalEnvio);
 						}
 					}
 				}		
